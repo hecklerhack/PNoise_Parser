@@ -1,15 +1,17 @@
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Hashtable;
 
 public class Tokenizer
 {
 	private ArrayList<TokenData> tokenDatas;
 	
 	private String str;
-	
 	private Token lastToken;
 	private boolean pushBack;
+    public String literal;
+    public Identifier id;
 
 	public Tokenizer(String str){
 		this.tokenDatas = new ArrayList<TokenData>();
@@ -46,6 +48,8 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(gawin)"), TokenType.DO));
                 tokenDatas.add(new TokenData(Pattern.compile("^(tigil)"), TokenType.BREAK));
                 tokenDatas.add(new TokenData(Pattern.compile("^(tuloy)"), TokenType.CONTINUE));
+                tokenDatas.add(new TokenData(Pattern.compile("^(totoo)"), TokenType.TRUE));
+                tokenDatas.add(new TokenData(Pattern.compile("^(mali)"), TokenType.FALSE));
                 tokenDatas.add(new TokenData(Pattern.compile("^('+')"), TokenType.ARITH_OP_ADD));
                 tokenDatas.add(new TokenData(Pattern.compile("^(-)"), TokenType.ARITH_OP_SUB));
                 tokenDatas.add(new TokenData(Pattern.compile("^('*')"), TokenType.ARITH_OP_MULTI));
@@ -55,6 +59,7 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(==, <, >, <=, >=, !=)"), TokenType.RELATIONAL_OPE));
                 tokenDatas.add(new TokenData(Pattern.compile("^('+''+')"), TokenType.INCREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(--)"), TokenType.DECREMENT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\.)"), TokenType.DOT));
                 
                 tokenDatas.add(new TokenData(Pattern.compile("^([a-zA-Z][a-zA-Z0-9]*)"), TokenType.IDENTIFIER));
                 
@@ -93,8 +98,12 @@ public class Tokenizer
                             case TERMINATOR : return (lastToken = new Token("[TERMINATOR]", data.getType()));
                             case PRINT : return (lastToken = new Token("[PRINT]", data.getType()));
                             case RETURN : return (lastToken = new Token("[RETURN]", data.getType()));
-                            case LITERAL_STRING : return (lastToken = new Token("[LITERAL_STRING, " + token + " ]", data.getType()));
-                            case LITERAL_INT : return (lastToken = new Token("[LITERAL_INT, " + token + " ]", data.getType()));
+                            case LITERAL_STRING : 
+                                literal = token;
+                                return (lastToken = new Token("[LITERAL_STRING, " + token + " ]", data.getType()));
+                            case LITERAL_INT : 
+                                literal = token;
+                                return (lastToken = new Token("[LITERAL_INT, " + token + " ]", data.getType()));
                             case DATA_TYPE_CONNECTOR : return (lastToken = new Token("[DATA_TYPE_CONNECTOR]", data.getType()));
                             case DATA_TYPE_FLOAT : return (lastToken = new Token("[DATA_TYPE_FLOAT]", data.getType()));
                             case DATA_TYPE_DOUBLE : return (lastToken = new Token("[DATA_TYPE_DOUBLE]", data.getType()));
@@ -122,8 +131,16 @@ public class Tokenizer
                             case CONTINUE : return (lastToken = new Token("[CONTINUE]", data.getType()));
                             case SCAN : return (lastToken = new Token("[SCAN]", data.getType()));
                             case SYMBOLS : return (lastToken = new Token("[SYMBOLS]", data.getType()));
+                            case DOT : return (lastToken = new Token("[DOT]", data.getType()));
+                            case TRUE:
+                                return (lastToken = new Token("[TRUE]", data.getType()));
+                            case FALSE:
+                                return (lastToken = new Token("[FALSE]", data.getType()));
                             
-                            default : return (lastToken = new Token("[IDENTIFIER, " + token + " ]", TokenType.LITERAL_STRING));
+                            default : 
+                                id = new Identifier();
+                                id.setIdentifierVar(token);
+                                return (lastToken = new Token("[IDENTIFIER, " + token + " ]", TokenType.LITERAL_STRING));
                                                                                      
                                   
                     }
@@ -135,6 +152,16 @@ public class Tokenizer
         
         public boolean hasNextToken(){
             return !str.isEmpty();
+        }
+
+        public Identifier getIdentifier()
+        {
+            return id;
+        }
+
+        public String getLiteral()
+        {
+            return literal;
         }
         
         public void pushBack(){

@@ -1,7 +1,7 @@
 nume_simula(){
-nume_counter>>;
-pasya_x >> TRUE;
-doble_y >> 7.3;
+nume_counter>>3;
+pasya_x >> totoo;
+doble_y >> 793;
 
 ipakita("yoohoo");
 tuloy

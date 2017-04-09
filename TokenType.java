@@ -5,6 +5,8 @@ public enum TokenType{
 	IDENTIFIER, 
 	LITERAL_INT,//integer 
 	LITERAL_STRING,//"string"
+        TRUE, 
+        FALSE,
         MAIN,//simula
         DELIM_L_PAREN,//(
         DELIM_R_PAREN,//)
@@ -47,6 +49,7 @@ public enum TokenType{
         RELATIONAL_OPE,// relational operators
         INCREMENT,// ++
         DECREMENT,// --
+        DOT
         
 
 }//end enum
