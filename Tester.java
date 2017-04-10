@@ -15,6 +15,7 @@ public class Tester {
          String input = "";
         
          Scanner sc = new Scanner(file);
+         Parser parse = new Parser();
          
          while (sc.hasNextLine()) {
             input += sc.nextLine(); 
@@ -32,12 +33,16 @@ public class Tester {
             }
             
             System.out.print(" ");
+            parse.getToken(token);
         }
-        Set<String> keys = symbolTable.keySet();        //get all keys from symbol table
-        Iterator<String> itr = keys.iterator();
+  /*      Set<String> keys = symbolTable.keySet();        
+        Iterator<String> itr = keys.iterator();*/
+
+        parse.printParserTokens();
 
          sc.close();
     }
+
     //adds identifier to symbol table
     public static void addIdentifier(Tokenizer tok, Token t)
     {
@@ -79,5 +84,4 @@ public class Tester {
 
     }
     //future to do: check if value is double (3.97 for example)
-    
 }
