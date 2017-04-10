@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.Iterator;
 
 public class Tester {
     
@@ -21,17 +23,20 @@ public class Tester {
         Tokenizer tokenizer = new Tokenizer(input);
         
         while (tokenizer.hasNextToken()){
-            System.out.print(tokenizer.nextToken().getToken());
-            if(tokenizer.nextToken().getToken().indexOf("IDENTIFIER") != -1)
+            Token token = tokenizer.nextToken();
+            String s = token.getToken();
+            System.out.print(s);
+            if(s.indexOf("IDENTIFIER") != -1)
             {
-                addIdentifier(tokenizer, tokenizer.nextToken());
+                addIdentifier(tokenizer, token);
             }
+            
             System.out.print(" ");
         }
-        
+        Set<String> keys = symbolTable.keySet();        //get all keys from symbol table
+        Iterator<String> itr = keys.iterator();
+
          sc.close();
-        
-       
     }
     //adds identifier to symbol table
     public static void addIdentifier(Tokenizer tok, Token t)
@@ -39,12 +44,14 @@ public class Tester {
 
         Identifier id = tok.getIdentifier();
         String var = id.getIdentifierVar();
-        while(tok.hasNextToken())
+        t = tok.nextToken();
+        if(tok.hasNextToken())
         {
             if(t.getType() == TokenType.ASSIGNMENT)
             {
-                System.out.print(tok.nextToken().getToken());
+                System.out.print(t.getToken());
                 System.out.print(" ");
+                t = tok.nextToken();
                 String value = addValue(tok, t);
                 symbolTable.put(var, value);
                 return;
@@ -61,15 +68,16 @@ public class Tester {
         //if next token is not a variable, get constant literal of identifier
         
         String value = "";
-        while(t.getType() != TokenType.TERMINATOR && tok.hasNextToken())
+        while((t.getType() != TokenType.TERMINATOR && t.getType() != TokenType.DELIM_R_PAREN) && tok.hasNextToken())
         {
             //if next token is not a variable
             String literal = tok.getLiteral();
-            value += literal;                           //future to do: check if value is double (3.97 for example)
+            value += literal; 
+            t = tok.nextToken();                         
         }
         return value;
 
     }
-    
+    //future to do: check if value is double (3.97 for example)
     
 }

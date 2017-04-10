@@ -133,8 +133,10 @@ public class Tokenizer
                             case SYMBOLS : return (lastToken = new Token("[SYMBOLS]", data.getType()));
                             case DOT : return (lastToken = new Token("[DOT]", data.getType()));
                             case TRUE:
+                                literal = token;
                                 return (lastToken = new Token("[TRUE]", data.getType()));
                             case FALSE:
+                                literal = token;
                                 return (lastToken = new Token("[FALSE]", data.getType()));
                             
                             default : 
