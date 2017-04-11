@@ -11,7 +11,7 @@ public class Tester {
 
     public static void main(String args[]) throws FileNotFoundException
     {
-         File file = new File("sample.pn");
+         File file = new File("C://sample.pn");
          String input = "";
         
          Scanner sc = new Scanner(file);
@@ -39,7 +39,7 @@ public class Tester {
         Iterator<String> itr = keys.iterator();*/
 
      //   parse.printParserTokens();
-
+        parse.lookup();
          sc.close();
     }
 
