@@ -29,11 +29,12 @@ public class Parser
 			System.out.print(parse_stack.pop());
 	}*/
 	
+	//just used to test this if it can read the excel file
 	public void lookup()
 	{
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("test.xlsx"));
+			FileInputStream file = new FileInputStream(new File("C://test.xlsx"));		//just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			
@@ -52,10 +53,10 @@ public class Parser
                     switch (cell.getCellType()) 
                     {
                         case Cell.CELL_TYPE_NUMERIC:
-                            System.out.print(cell.getNumericCellValue() + "t");
+                            System.out.print(cell.getNumericCellValue() + "\t");
                             break;
                         case Cell.CELL_TYPE_STRING:
-                            System.out.print(cell.getStringCellValue() + "t");
+                            System.out.print(cell.getStringCellValue() + "\t");
                             break;
                     }
                 }
@@ -65,7 +66,7 @@ public class Parser
 		}
 		catch(Exception e)
 		{
-			System.out.println("won't work");
+			e.printStackTrace();
 		}
 	}
 }
