@@ -8,6 +8,7 @@ import java.util.Iterator;
 public class Tester {
     
     public static Hashtable<String, String> symbolTable = new Hashtable<String, String>();
+    public static Parser parse;
 
     public static void main(String args[]) throws FileNotFoundException
     {
@@ -15,7 +16,7 @@ public class Tester {
          String input = "";
         
          Scanner sc = new Scanner(file);
-         Parser parse = new Parser();
+         parse = new Parser();
          
          while (sc.hasNextLine()) {
             input += sc.nextLine(); 
@@ -26,28 +27,30 @@ public class Tester {
         while (tokenizer.hasNextToken()){
             Token token = tokenizer.nextToken();
             String s = token.getToken();
-            System.out.print(s);
+            System.out.println("["+s+"]");
+           
             if(s.indexOf("IDENTIFIER") != -1)
             {
                 addIdentifier(tokenizer, token);
             }
-            
+            parse.lookup(s);
             System.out.print(" ");
             parse.getToken(token);
         }
+        parse.lookup("$");
   /*      Set<String> keys = symbolTable.keySet();        
         Iterator<String> itr = keys.iterator();*/
 
      //   parse.printParserTokens();
         System.out.println();
-        parse.lookup();
+    //    parse.lookup();
          sc.close();
     }
 
     //adds identifier to symbol table
     public static void addIdentifier(Tokenizer tok, Token t)
     {
-
+    	parse.lookup(t.getToken());
         Identifier id = tok.getIdentifier();
         String var = id.getIdentifierVar();
         t = tok.nextToken();
@@ -55,15 +58,18 @@ public class Tester {
         {
             if(t.getType() == TokenType.ASSIGNMENT)
             {
-                System.out.print(t.getToken());
-                System.out.print(" ");
+                System.out.print("["+t.getToken()+"]");
+                parse.lookup(t.getToken());
                 t = tok.nextToken();
                 String value = addValue(tok, t);
                 symbolTable.put(var, value);
+      //          System.out.print("["+t.getToken()+"]");
+             
                 return;
             }
             else if(t.getType() == TokenType.TERMINATOR)
             {
+            	System.out.print("["+t.getToken()+"]");
                 return;
             }
         }
@@ -74,15 +80,20 @@ public class Tester {
         //if next token is not a variable, get constant literal of identifier
         
         String value = "";
-        while((t.getType() != TokenType.TERMINATOR && t.getType() != TokenType.DELIM_R_PAREN) && tok.hasNextToken())
+        Token valueToken = t;
+        while(t.getType() != TokenType.TERMINATOR && t.getType() != TokenType.DELIM_R_PAREN && tok.hasNextToken())
         {
             //if next token is not a variable
             String literal = tok.getLiteral();
             value += literal; 
+            valueToken = t;
             t = tok.nextToken();                         
         }
+        System.out.println("["+valueToken.getToken()+"]");
+        System.out.println("["+t.getToken()+"]");		//prints terminator token
+        parse.lookup(valueToken.getToken());
+        parse.lookup(t.getToken());
         return value;
 
     }
-    //future to do: check if value is double (3.97 for example)
 }

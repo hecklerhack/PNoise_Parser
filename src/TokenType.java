@@ -3,8 +3,8 @@ public enum TokenType{
         EMPTY,
         TOKEN, 
 	IDENTIFIER, 
-	LITERAL_INT,//integer 
-	LITERAL_STRING,//"string"
+	INTEGER_CONSTANT,//integer 
+	STRING_CONSTANT,//"string"
         TRUE, 
         FALSE,
         MAIN,//simula
@@ -16,7 +16,7 @@ public enum TokenType{
         TERMINATOR,//;
         PRINT,//ipakita
         SCAN,//ilagay
-        DATA_TYPE_CONNECTOR,//_
+        UNDERSCORE,//_
         SYMBOLS,//mga symbols
         /*CONDITIONAL STATEMENTS*/
         IF,//kapag
@@ -49,7 +49,8 @@ public enum TokenType{
         RELATIONAL_OPE,// relational operators
         INCREMENT,// ++
         DECREMENT,// --
-        DOT
+        DOT,
+        END
         
 
 }//end enum

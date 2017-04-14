@@ -5,15 +5,23 @@ import java.util.Stack;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Parser
 {
 	Stack<String> parse_stack;
+	private int state = 0;			//initialize state to 0
+	private int numTokens = 54; 	//total of 57 tokens in the parsing table
+	private int numStates = 291;	//total of 279 states in the parsing table
+	Stack<Integer> state_stack;			//stack of states visited
+	private int totalGoto = 21;
 	public Parser()
 	{
 		parse_stack = new Stack<String>();
+		state_stack = new Stack<Integer>();
+		state_stack.push(state);
 	}
 
 	//gets each token from scanner
@@ -29,39 +37,81 @@ public class Parser
 			System.out.print(parse_stack.pop());
 	}*/
 	
-	//just used to test this if it can read the excel file
-	public void lookup()
+	public void lookup(String token)
 	{
+		if(token.indexOf("IDENTIFIER") != -1)
+			token = "IDENTIFIER";
+		
+		if(token.indexOf("INTEGER_CONSTANT") != -1)
+			token = "INTEGER_CONSTANT";
+		
+		if(token.indexOf("STRING_CONSTANT") != -1)
+			token = "STRING_CONSTANT";
+		
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("C://test.xlsx"));		//just put excel file on the directory. I'll fix it sometime.
+			FileInputStream file = new FileInputStream(new File("C://Parsing Table.xlsx"));		//just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			
-			//Iterate through each rows one by one
-            Iterator<Row> rowIterator = sheet.iterator();
-            while (rowIterator.hasNext()) 
-            {
-                Row row = rowIterator.next();
-                //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = row.cellIterator();
-                 
-                while (cellIterator.hasNext()) 
-                {
-                    Cell cell = cellIterator.next();
-                    //Check the cell type and format accordingly
-                    switch (cell.getCellType()) 
-                    {
-                        case Cell.CELL_TYPE_NUMERIC:
-                            System.out.print(cell.getNumericCellValue() + "\t");
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            System.out.print(cell.getStringCellValue() + "\t");
-                            break;
-                    }
-                }
-                System.out.println("");
-            }
+			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
+			XSSFCell cell = null;
+			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
+			        cell = sheet.getRow(0).getCell(columnIndex);
+			        if(token.equals(cell.toString()))
+			        {
+			            cell = sheet.getRow(state + 1).getCell(columnIndex);
+			            System.out.println(cell.toString());
+			            break;
+			            
+			        }
+			}
+			String st = cell.toString();
+			String num = "";
+			if(st.length() > 2)
+				num = st.substring(1, st.length());			//extracts the number
+			else if(st.length() == 2)
+				num  = st.charAt(1) + "";
+	            if(st.indexOf("s") != -1)			//shift
+			     {
+			        state = Integer.parseInt(num);
+			        state_stack.push(state);
+			        parse_stack.push(token);
+			     }
+			     else if(st.indexOf("r") != -1)	//reduce
+			     {
+			        //pop stack, reduce to a certain rule
+			         XSSFSheet rule_sheet = workbook.getSheetAt(2);		//get CFG rules
+			         int row = Integer.parseInt(num);   	
+			         cell = rule_sheet.getRow(row).getCell(0);   	
+			         System.out.println(cell.toString());   	   	
+			            	
+			            	XSSFCell cell2 = rule_sheet.getRow(row).getCell(2);			//get total tokens to pop in stack
+			            	String sTotalPop = cell2.getRawValue();
+			            	int nTotalPop = Integer.parseInt(sTotalPop);
+			            	for(int counter = 0; counter < nTotalPop; counter++)
+			            	{
+			            		parse_stack.pop();
+			            		state_stack.pop();
+			            	}
+			            	parse_stack.push(cell.toString());
+			            	
+			            	state = state_stack.peek();
+			            	System.out.println("state: " + state);
+			            	//goto 
+			            	String top = parse_stack.peek(); 
+			            	for(int columnIndex = 1; columnIndex <= totalGoto; columnIndex++)
+			            	{
+			            		cell = sheet.getRow(0).getCell(numTokens + columnIndex);
+			            		if(top.equals(cell.toString()))
+			            		{
+			            			cell = sheet.getRow(state + 1).getCell(columnIndex + numTokens);
+			            			state = Integer.parseInt(cell.getRawValue());
+			            			state_stack.push(state);
+			            			System.out.println("goto: " + state);
+			            			break;
+			            		}
+			            	}
+			            	lookup(token);
+			     }     	      
             file.close();
 		}
 		catch(Exception e)
