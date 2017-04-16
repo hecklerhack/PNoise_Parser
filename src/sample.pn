@@ -3,4 +3,6 @@ nume_counter>>3;
 pasya_x >> totoo;
 nume_y >> 3+7;
 tali_z >> "s";
+
+ibalik 0;
 }

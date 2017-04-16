@@ -12,7 +12,7 @@ public class Tester {
 
     public static void main(String args[]) throws FileNotFoundException
     {
-         File file = new File("C://sample.pn"); //just put the file on the directory. I'll fix it sometime.
+         File file = new File("C:\\sample.pn"); //just put the file on the directory. I'll fix it sometime.
          String input = "";
         
          Scanner sc = new Scanner(file);
@@ -23,7 +23,20 @@ public class Tester {
           }
          
         Tokenizer tokenizer = new Tokenizer(input);
+        Tokenizer tokenoutputs = new Tokenizer(input);
         
+        System.out.println("TOKENS");
+        System.out.println("===============================================================");
+        
+        while (tokenoutputs.hasNextToken()){
+            System.out.print("[" + tokenoutputs.nextToken().getToken() + "]");
+            sc.close();
+        }
+        System.out.println();
+        System.out.println("===============================================================");
+        System.out.println();
+        System.out.println("PARSING ACTION");
+        System.out.println("===============================================================");
         while (tokenizer.hasNextToken()){
             Token token = tokenizer.nextToken();
             String s = token.getToken();
@@ -34,10 +47,12 @@ public class Tester {
                 addIdentifier(tokenizer, token);
             }
             parse.lookup(s);
-            System.out.print(" ");
+            //System.out.print(" ");
             parse.getToken(token);
-        }
+            System.out.println();
+        }         
         parse.lookup("$");
+         System.out.println("===============================================================");
   /*      Set<String> keys = symbolTable.keySet();        
         Iterator<String> itr = keys.iterator();*/
 
@@ -58,7 +73,7 @@ public class Tester {
         {
             if(t.getType() == TokenType.ASSIGNMENT)
             {
-                System.out.print("["+t.getToken()+"]");
+                System.out.println("["+t.getToken()+"]");
                 parse.lookup(t.getToken());
                 t = tok.nextToken();
                 String value = addValue(tok, t);
@@ -69,7 +84,7 @@ public class Tester {
             }
             else if(t.getType() == TokenType.TERMINATOR)
             {
-            	System.out.print("["+t.getToken()+"]");
+            	System.out.println("["+t.getToken()+"]");
                 return;
             }
         }
@@ -90,6 +105,7 @@ public class Tester {
             t = tok.nextToken();                         
         }
         System.out.println("["+valueToken.getToken()+"]");
+        System.out.println();
         System.out.println("["+t.getToken()+"]");		//prints terminator token
         parse.lookup(valueToken.getToken());
         parse.lookup(t.getToken());

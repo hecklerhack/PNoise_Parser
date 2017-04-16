@@ -50,16 +50,23 @@ public class Parser
 		
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("C://Parsing Table.xlsx"));		//just put excel file on the directory. I'll fix it sometime.
+			FileInputStream file = new FileInputStream(new File("C://Parsing Table.xlsx"));//just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
 			XSSFCell cell = null;
+                        XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
 			        cell = sheet.getRow(0).getCell(columnIndex);
 			        if(token.equals(cell.toString()))
 			        {
 			            cell = sheet.getRow(state + 1).getCell(columnIndex);
-			            System.out.println(cell.toString());
+                                    if(cell.toString().contains("s"))
+                                        System.out.println("SHIFT " + cell.toString());
+                                    else if(cell.toString().contains("r"))
+                                        System.out.print("REDUCE " + cell.toString() + ":");
+                                    else if(cell.toString().indexOf("acc") != -1)
+                                    	System.out.println("ACCEPT");
+                                    //System.out.println(cell.toString());
 			            break;
 			            
 			        }
@@ -67,10 +74,11 @@ public class Parser
 			String st = cell.toString();
 			String num = "";
 			if(st.length() > 2)
-				num = st.substring(1, st.length());			//extracts the number
+				num = st.substring(1, st.length());	//extracts the number
 			else if(st.length() == 2)
 				num  = st.charAt(1) + "";
-	            if(st.indexOf("s") != -1)			//shift
+			
+                 if(st.indexOf("s") != -1)			//shift
 			     {
 			        state = Integer.parseInt(num);
 			        state_stack.push(state);
@@ -81,10 +89,12 @@ public class Parser
 			        //pop stack, reduce to a certain rule
 			         XSSFSheet rule_sheet = workbook.getSheetAt(2);		//get CFG rules
 			         int row = Integer.parseInt(num);   	
-			         cell = rule_sheet.getRow(row).getCell(0);   	
-			         System.out.println(cell.toString());   	   	
+			         cell = rule_sheet.getRow(row).getCell(0);
+                                 cfgcell = rule_sheet.getRow(row).getCell(1);     
+			         //System.out.println(cell.toString());   
+                                 System.out.println(" " + cfgcell.toString());   
 			            	
-			            	XSSFCell cell2 = rule_sheet.getRow(row).getCell(2);			//get total tokens to pop in stack
+			            	XSSFCell cell2 = rule_sheet.getRow(row).getCell(2);	//get total tokens to pop in stack
 			            	String sTotalPop = cell2.getRawValue();
 			            	int nTotalPop = Integer.parseInt(sTotalPop);
 			            	for(int counter = 0; counter < nTotalPop; counter++)
@@ -112,7 +122,7 @@ public class Parser
 			            	}
 			            	lookup(token);
 			     }     	      
-            file.close();
+                file.close();
 		}
 		catch(Exception e)
 		{

@@ -10,8 +10,8 @@ public class Tokenizer
 	private String str;
 	private Token lastToken;
 	private boolean pushBack;
-    public String literal;
-    public Identifier id;
+        public String literal;
+        public Identifier id;
 
 	public Tokenizer(String str){
 		this.tokenDatas = new ArrayList<TokenData>();
@@ -50,9 +50,9 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(tuloy)"), TokenType.CONTINUE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(totoo)"), TokenType.TRUE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(mali)"), TokenType.FALSE));
-                tokenDatas.add(new TokenData(Pattern.compile("^('+')"), TokenType.ARITH_OP_ADD));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\+)"), TokenType.ARITH_OP_ADD));
                 tokenDatas.add(new TokenData(Pattern.compile("^(-)"), TokenType.ARITH_OP_SUB));
-                tokenDatas.add(new TokenData(Pattern.compile("^('*')"), TokenType.ARITH_OP_MULTI));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\*)"), TokenType.ARITH_OP_MULTI));
                 tokenDatas.add(new TokenData(Pattern.compile("^(/)"), TokenType.ARITH_OP_DIV));
                 tokenDatas.add(new TokenData(Pattern.compile("^('*''*')"), TokenType.ARITH_EXPO));
                 tokenDatas.add(new TokenData(Pattern.compile("^(&&)"), TokenType.LOGICAL_OPE));
