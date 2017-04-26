@@ -1,9 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Hashtable;
-import java.util.Set;
-import java.util.Iterator;
+import grtree.NPLviewer;
 
 public class Tester {
     
@@ -14,7 +15,8 @@ public class Tester {
     {
          File file = new File("C:\\sample.pn"); //just put the file on the directory. I'll fix it sometime.
          String input = "";
-        
+         
+         File parse_tree = new File("D:\\parse_tree.txt");
          Scanner sc = new Scanner(file);
          parse = new Parser();
          
@@ -47,19 +49,26 @@ public class Tester {
                 addIdentifier(tokenizer, token);
             }
             parse.lookup(s);
-            //System.out.print(" ");
             parse.getToken(token);
             System.out.println();
         }         
         parse.lookup("$");
          System.out.println("===============================================================");
-  /*      Set<String> keys = symbolTable.keySet();        
-        Iterator<String> itr = keys.iterator();*/
 
-     //   parse.printParserTokens();
         System.out.println();
-    //    parse.lookup();
+        String s = parse.getParseTree().pop();
+        
+        try {
+			FileWriter writer = new FileWriter(parse_tree);
+			writer.write(s);
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
          sc.close();
+         
+         NPLviewer tree_gen = new NPLviewer("D:\\parse_tree.txt");
     }
 
     //adds identifier to symbol table
@@ -78,7 +87,6 @@ public class Tester {
                 t = tok.nextToken();
                 String value = addValue(tok, t);
                 symbolTable.put(var, value);
-      //          System.out.print("["+t.getToken()+"]");
              
                 return;
             }
@@ -111,5 +119,20 @@ public class Tester {
         parse.lookup(t.getToken());
         return value;
 
+    }
+    
+    public static String reverse(String input){
+        char[] in = input.toCharArray();
+        int begin=0;
+        int end=in.length-1;
+        char temp;
+        while(end>begin){
+            temp = in[begin];
+            in[begin]=in[end];
+            in[end] = temp;
+            end--;
+            begin++;
+        }
+        return new String(in);
     }
 }

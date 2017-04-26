@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,12 +17,15 @@ public class Parser
 	private int numTokens = 54; 	//total of 57 tokens in the parsing table
 	private int numStates = 291;	//total of 279 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
+	LinkedList<String> parse_tree;
 	private int totalGoto = 21;
+	private String literal;
 	public Parser()
 	{
 		parse_stack = new Stack<String>();
 		state_stack = new Stack<Integer>();
 		state_stack.push(state);
+		parse_tree = new LinkedList<String>();
 	}
 
 	//gets each token from scanner
@@ -29,24 +33,31 @@ public class Parser
 	{
 		parse_stack.push(t.getToken());
 	}
-
-//just used to test if all tokens go to parser
-/*	public void printParserTokens()
-	{
-		while(!parse_stack.empty())
-			System.out.print(parse_stack.pop());
-	}*/
 	
 	public void lookup(String token)
 	{
 		if(token.indexOf("IDENTIFIER") != -1)
+		{
+			literal = token.substring(token.indexOf(",") + 1);
 			token = "IDENTIFIER";
+		}
 		
 		if(token.indexOf("INTEGER_CONSTANT") != -1)
+		{
+			literal = token.substring(token.indexOf(",") + 1);
 			token = "INTEGER_CONSTANT";
+		}
 		
 		if(token.indexOf("STRING_CONSTANT") != -1)
+		{
+			literal = token.substring(token.indexOf(",") + 1);
 			token = "STRING_CONSTANT";
+		}
+		
+		if(token.equals("TRUE") || token.equals("FALSE"))
+		{
+			literal = token;
+		}
 		
 		try
 		{
@@ -54,7 +65,7 @@ public class Parser
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
 			XSSFCell cell = null;
-                        XSSFCell cfgcell = null;
+            XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
 			        cell = sheet.getRow(0).getCell(columnIndex);
 			        if(token.equals(cell.toString()))
@@ -83,6 +94,16 @@ public class Parser
 			        state = Integer.parseInt(num);
 			        state_stack.push(state);
 			        parse_stack.push(token);
+			        
+			        ReservedWord rw = new ReservedWord();
+			        String str = "";
+			        if(rw.getLexeme(token) != null)
+			        {
+			        	str = rw.getLexeme(token);
+			        }
+			        else
+			        	str = literal;    
+			        parse_tree.addLast("[" + token +"#[["+str+"#[]]]],");
 			     }
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
@@ -90,18 +111,32 @@ public class Parser
 			         XSSFSheet rule_sheet = workbook.getSheetAt(2);		//get CFG rules
 			         int row = Integer.parseInt(num);   	
 			         cell = rule_sheet.getRow(row).getCell(0);
-                                 cfgcell = rule_sheet.getRow(row).getCell(1);     
+                     cfgcell = rule_sheet.getRow(row).getCell(1);     
 			         //System.out.println(cell.toString());   
-                                 System.out.println(" " + cfgcell.toString());   
+                     System.out.println(" " + cfgcell.toString());   
+                     
+                    /* String s = "[" + cell.toString() +"#[" + parse_tree;
+                     parse_tree = s;
+                     parse_tree = parse_tree.substring(0, parse_tree.length() - 1);
+                     parse_tree += "],";*/
 			            	
 			            	XSSFCell cell2 = rule_sheet.getRow(row).getCell(2);	//get total tokens to pop in stack
 			            	String sTotalPop = cell2.getRawValue();
 			            	int nTotalPop = Integer.parseInt(sTotalPop);
-			            	for(int counter = 0; counter < nTotalPop; counter++)
+			            	
+			            	String s = "[" + cell.toString() +"#[";
+			            	
+			            	for(int counter = nTotalPop; counter > 0; counter--)
 			            	{
 			            		parse_stack.pop();
 			            		state_stack.pop();
+			            		s += parse_tree.get(parse_tree.size() - counter);
+			            		parse_tree.remove(parse_tree.size() - counter);
 			            	}
+			            	s = s.substring(0, s.length() - 1);
+			            	s += "]],";
+			            	parse_tree.addLast(s);
+			            	
 			            	parse_stack.push(cell.toString());
 			            	
 			            	state = state_stack.peek();
@@ -128,5 +163,10 @@ public class Parser
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public LinkedList<String> getParseTree()
+	{
+		return parse_tree;
 	}
 }

@@ -100,10 +100,10 @@ public class Tokenizer
                             case RETURN : return (lastToken = new Token("RETURN", data.getType()));
                             case STRING_CONSTANT : 
                                 literal = token;
-                                return (lastToken = new Token("STRING_CONSTANT, " + token, data.getType()));
+                                return (lastToken = new Token("STRING_CONSTANT," + token, data.getType()));
                             case INTEGER_CONSTANT : 
                                 literal = token;
-                                return (lastToken = new Token("INTEGER_CONSTANT, " + token, data.getType()));
+                                return (lastToken = new Token("INTEGER_CONSTANT," + token, data.getType()));
                             case UNDERSCORE : return (lastToken = new Token("UNDERSCORE", data.getType()));
                             case DATA_TYPE_FLOAT : return (lastToken = new Token("DATA_TYPE_FLOAT", data.getType()));
                             case DATA_TYPE_DOUBLE : return (lastToken = new Token("DATA_TYPE_DOUBLE", data.getType()));
