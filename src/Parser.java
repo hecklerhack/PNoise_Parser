@@ -14,8 +14,8 @@ public class Parser
 {
 	Stack<String> parse_stack;
 	private int state = 0;			//initialize state to 0
-	private int numTokens = 53; 	//total of 57 tokens in the parsing table
-	private int numStates = 281;	//total of 279 states in the parsing table
+	private int numTokens = 52; 	//total of 57 tokens in the parsing table
+	private int numStates = 278;	//total of 279 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
 	LinkedList<String> parse_tree;
 	private int totalGoto = 21;
@@ -64,11 +64,11 @@ public class Parser
 		
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("D://Parsing Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
+			FileInputStream file = new FileInputStream(new File("D:\\Parsing-Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheetAt(2);		//get parsing table
+			XSSFSheet sheet = workbook.getSheetAt(3);		//get parsing table
 			XSSFCell cell = null;
-            XSSFCell cfgcell = null;
+                        XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
 			        cell = sheet.getRow(0).getCell(columnIndex);
 			        if(token.equals(cell.toString()))
@@ -119,7 +119,7 @@ public class Parser
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
 			        //pop stack, reduce to a certain rule
-			         XSSFSheet rule_sheet = workbook.getSheetAt(3);		//get CFG rules
+			         XSSFSheet rule_sheet = workbook.getSheetAt(2);		//get CFG rules
 			         int row = Integer.parseInt(num);   	
 			         cell = rule_sheet.getRow(row).getCell(0);
                      cfgcell = rule_sheet.getRow(row).getCell(1);     
@@ -154,6 +154,7 @@ public class Parser
 			            	System.out.println("state: " + state);
 			            	//goto 
 			            	String top = parse_stack.peek(); 
+                            System.out.println("top: " + top);
 			            	for(int columnIndex = 1; columnIndex <= totalGoto; columnIndex++)
 			            	{
 			            		cell = sheet.getRow(0).getCell(numTokens + columnIndex);
