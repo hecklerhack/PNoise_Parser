@@ -13,7 +13,7 @@ public class Tester {
 
     public static void main(String args[]) throws FileNotFoundException
     {
-         File file = new File("C:\\sample.pn"); //just put the file on the directory. I'll fix it sometime.
+         File file = new File("D:\\sample.pn"); 
          String input = "";
          
          File parse_tree = new File("D:\\parse_tree.txt");
@@ -68,7 +68,9 @@ public class Tester {
 		}
          sc.close();
          
-         NPLviewer tree_gen = new NPLviewer("D:\\parse_tree.txt");
+         NPLviewer tree_gen = null;
+         if(parse.isAccepted())
+        	 tree_gen = new NPLviewer("D:\\parse_tree.txt");
     }
 
     //adds identifier to symbol table
@@ -108,6 +110,7 @@ public class Tester {
         {
             //if next token is not a variable
             String literal = tok.getLiteral();
+            parse.lookup(valueToken.getToken()); //try
             value += literal; 
             valueToken = t;
             t = tok.nextToken();                         

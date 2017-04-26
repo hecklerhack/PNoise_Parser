@@ -18,7 +18,7 @@ public class Tokenizer
 		this.str = str;
 	
                 tokenDatas.add(new TokenData(Pattern.compile("^((-)?[0-9]+)"), TokenType.INTEGER_CONSTANT));
-                tokenDatas.add(new TokenData(Pattern.compile("^(\".*\")"), TokenType.STRING_CONSTANT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\\".*\\\")"), TokenType.STRING_CONSTANT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(nume)"), TokenType.DATA_TYPE_INT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(lutang)"), TokenType.DATA_TYPE_FLOAT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(doble)"), TokenType.DATA_TYPE_DOUBLE));
@@ -51,18 +51,19 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(totoo)"), TokenType.TRUE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(mali)"), TokenType.FALSE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\+)"), TokenType.ARITH_OP_ADD));
-                tokenDatas.add(new TokenData(Pattern.compile("^(-)"), TokenType.ARITH_OP_SUB));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\-)"), TokenType.ARITH_OP_SUB));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\*)"), TokenType.ARITH_OP_MULTI));
                 tokenDatas.add(new TokenData(Pattern.compile("^(/)"), TokenType.ARITH_OP_DIV));
                 tokenDatas.add(new TokenData(Pattern.compile("^('*''*')"), TokenType.ARITH_EXPO));
-                tokenDatas.add(new TokenData(Pattern.compile("^(&&)"), TokenType.LOGICAL_OPE));
-                tokenDatas.add(new TokenData(Pattern.compile("^(==, <, >, <=, >=, !=)"), TokenType.RELATIONAL_OPE));
+                tokenDatas.add(new TokenData(Pattern.compile("^(&&)"), TokenType.RELATIONAL_OPE));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\==, \\<, \\>, \\<=, \\>=, \\!=)"), TokenType.LOGICAL_OPE));
                 tokenDatas.add(new TokenData(Pattern.compile("^('+''+')"), TokenType.INCREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(--)"), TokenType.DECREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\.)"), TokenType.DOT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(wakas)"), TokenType.END));
-                tokenDatas.add(new TokenData(Pattern.compile("^([a-zA-Z][a-zA-Z0-9]*)"), TokenType.IDENTIFIER));
                 
+                tokenDatas.add(new TokenData(Pattern.compile("^([a-zA-Z][a-zA-Z0-9]*)"), TokenType.IDENTIFIER));
+                //tokenDatas.add(new TokenData(Pattern.compile("^(\\\")"), TokenType.DQ));//try again
                 for (String t : new String[] {"\\{", "\\}", ";", "_", "\\(", "\\)", "\\.", "\\,"}){
                     tokenDatas.add(new TokenData(Pattern.compile("^(" + t + ")"), TokenType.TOKEN));
                 }
@@ -120,6 +121,7 @@ public class Tokenizer
                             case INCREMENT : return (lastToken = new Token("INCREMENT", data.getType()));
                             case DECREMENT : return (lastToken = new Token("DECREMENT", data.getType()));
                             case IF : return (lastToken = new Token("IF", data.getType()));
+                           // case DQ : return (lastToken = new Token("DQ", data.getType()));//TRY
                             case THEN : return (lastToken = new Token("THEN", data.getType()));
                             case ELSE : return (lastToken = new Token("ELSE", data.getType()));
                             case SWITCH : return (lastToken = new Token("SWITCH", data.getType()));

@@ -14,12 +14,15 @@ public class Parser
 {
 	Stack<String> parse_stack;
 	private int state = 0;			//initialize state to 0
-	private int numTokens = 54; 	//total of 57 tokens in the parsing table
-	private int numStates = 291;	//total of 279 states in the parsing table
+	private int numTokens = 53; 	//total of 57 tokens in the parsing table
+	private int numStates = 281;	//total of 279 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
 	LinkedList<String> parse_tree;
 	private int totalGoto = 21;
 	private String literal;
+	private boolean accept = false;
+	private int error_counter = 0;
+	
 	public Parser()
 	{
 		parse_stack = new Stack<String>();
@@ -61,9 +64,9 @@ public class Parser
 		
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("C://Parsing Table.xlsx"));//just put excel file on the directory. I'll fix it sometime.
+			FileInputStream file = new FileInputStream(new File("D://Parsing Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
+			XSSFSheet sheet = workbook.getSheetAt(2);		//get parsing table
 			XSSFCell cell = null;
             XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
@@ -71,13 +74,21 @@ public class Parser
 			        if(token.equals(cell.toString()))
 			        {
 			            cell = sheet.getRow(state + 1).getCell(columnIndex);
-                                    if(cell.toString().contains("s"))
-                                        System.out.println("SHIFT " + cell.toString());
-                                    else if(cell.toString().contains("r"))
-                                        System.out.print("REDUCE " + cell.toString() + ":");
-                                    else if(cell.toString().indexOf("acc") != -1)
-                                    	System.out.println("ACCEPT");
-                                    //System.out.println(cell.toString());
+                        if(cell.toString().contains("s"))
+                            System.out.println("SHIFT " + cell.toString());
+                        else if(cell.toString().contains("r"))
+                            System.out.print("REDUCE " + cell.toString() + ":");
+                        else if(cell.toString().indexOf("acc") != -1)
+                        {
+                            System.out.println("ACCEPT");
+                            accept = true;
+                        }
+                        else
+                        {
+                        	//System.out.println("ERROR: " + token + " not expected");
+                        	error_counter++;
+                        }
+                               
 			            break;
 			            
 			        }
@@ -108,7 +119,7 @@ public class Parser
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
 			        //pop stack, reduce to a certain rule
-			         XSSFSheet rule_sheet = workbook.getSheetAt(2);		//get CFG rules
+			         XSSFSheet rule_sheet = workbook.getSheetAt(3);		//get CFG rules
 			         int row = Integer.parseInt(num);   	
 			         cell = rule_sheet.getRow(row).getCell(0);
                      cfgcell = rule_sheet.getRow(row).getCell(1);     
@@ -168,5 +179,10 @@ public class Parser
 	public LinkedList<String> getParseTree()
 	{
 		return parse_tree;
+	}
+	
+	public boolean isAccepted()
+	{
+		return accept;
 	}
 }

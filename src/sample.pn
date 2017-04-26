@@ -1,8 +1,8 @@
 nume_simula(){
 nume_counter>>3;
 pasya_x >> totoo;
-nume_y >> 3+7;
-tali_z >> "s";
-
+tali_z >> "abba";
+nume_y >> 5+7;
+ipakita("asa");
 ibalik 0;
 }

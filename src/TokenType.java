@@ -8,6 +8,7 @@ public enum TokenType{
         TRUE, 
         FALSE,
         MAIN,//simula
+        DQ,//TRY
         DELIM_L_PAREN,//(
         DELIM_R_PAREN,//)
         DELIM_L_BLOCK,//{
