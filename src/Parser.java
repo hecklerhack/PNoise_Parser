@@ -14,8 +14,8 @@ public class Parser
 {
 	Stack<String> parse_stack;
 	private int state = 0;			//initialize state to 0
-	private int numTokens = 52; 	//total of 57 tokens in the parsing table
-	private int numStates = 278;	//total of 279 states in the parsing table
+	private int numTokens = 53; 	//total of 57 tokens in the parsing table
+	private int numStates = 349;	//total of 279 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
 	LinkedList<String> parse_tree;
 	private int totalGoto = 21;
@@ -62,11 +62,17 @@ public class Parser
 			literal = token;
 		}
 		
+		if(token.indexOf("RELATIONAL_OPE") != -1)
+		{
+			literal = token.substring(token.indexOf(",") + 1);
+			token = "RELATIONAL_OPE";
+		}
+		
 		try
 		{
 			FileInputStream file = new FileInputStream(new File("D:\\Parsing-Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheetAt(3);		//get parsing table
+			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
 			XSSFCell cell = null;
                         XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
@@ -77,7 +83,10 @@ public class Parser
                         if(cell.toString().contains("s"))
                             System.out.println("SHIFT " + cell.toString());
                         else if(cell.toString().contains("r"))
+                        {
+                        	System.out.println("Lookahead: " + token.toString());
                             System.out.print("REDUCE " + cell.toString() + ":");
+                        }
                         else if(cell.toString().indexOf("acc") != -1)
                         {
                             System.out.println("ACCEPT");
@@ -85,7 +94,7 @@ public class Parser
                         }
                         else
                         {
-                        	//System.out.println("ERROR: " + token + " not expected");
+                        	System.out.println("ERROR: " + token + " not expected");
                         	error_counter++;
                         }
                                
@@ -113,7 +122,7 @@ public class Parser
 			        	str = rw.getLexeme(token);
 			        }
 			        else
-			        	str = literal;    
+			        	str = literal;
 			        parse_tree.addLast("[" + token +"#[["+str+"#[]]]],");
 			     }
 			     else if(st.indexOf("r") != -1)	//reduce
@@ -125,11 +134,6 @@ public class Parser
                      cfgcell = rule_sheet.getRow(row).getCell(1);     
 			         //System.out.println(cell.toString());   
                      System.out.println(" " + cfgcell.toString());   
-                     
-                    /* String s = "[" + cell.toString() +"#[" + parse_tree;
-                     parse_tree = s;
-                     parse_tree = parse_tree.substring(0, parse_tree.length() - 1);
-                     parse_tree += "],";*/
 			            	
 			            	XSSFCell cell2 = rule_sheet.getRow(row).getCell(2);	//get total tokens to pop in stack
 			            	String sTotalPop = cell2.getRawValue();
@@ -154,7 +158,7 @@ public class Parser
 			            	System.out.println("state: " + state);
 			            	//goto 
 			            	String top = parse_stack.peek(); 
-                            System.out.println("top: " + top);
+                       //     System.out.println("top: " + top);
 			            	for(int columnIndex = 1; columnIndex <= totalGoto; columnIndex++)
 			            	{
 			            		cell = sheet.getRow(0).getCell(numTokens + columnIndex);

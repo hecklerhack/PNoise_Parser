@@ -56,7 +56,7 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(/)"), TokenType.ARITH_OP_DIV));
                 tokenDatas.add(new TokenData(Pattern.compile("^('*''*')"), TokenType.ARITH_EXPO));
                 tokenDatas.add(new TokenData(Pattern.compile("^(&&)"), TokenType.LOGICAL_OPE));
-                tokenDatas.add(new TokenData(Pattern.compile("^(==, <, >, <=, >=, !=)"), TokenType.RELATIONAL_OPE));
+                tokenDatas.add(new TokenData(Pattern.compile("^([<>=!]=?)"), TokenType.RELATIONAL_OPE));
                 tokenDatas.add(new TokenData(Pattern.compile("^('+''+')"), TokenType.INCREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(--)"), TokenType.DECREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\.)"), TokenType.DOT));
@@ -116,7 +116,8 @@ public class Tokenizer
                             case ARITH_OP_DIV : return (lastToken = new Token("ARITH_OP_DIV", data.getType()));
                             case ARITH_EXPO : return (lastToken = new Token("ARITH_EXPO", data.getType()));
                             case LOGICAL_OPE : return (lastToken = new Token("LOGICAL_OPE", data.getType()));
-                            case RELATIONAL_OPE : return (lastToken = new Token("RELATIONAL_OPE", data.getType()));
+                            case RELATIONAL_OPE : 
+                            	return (lastToken = new Token("RELATIONAL_OPE, " + token, data.getType()));
                             case INCREMENT : return (lastToken = new Token("INCREMENT", data.getType()));
                             case DECREMENT : return (lastToken = new Token("DECREMENT", data.getType()));
                             case IF : return (lastToken = new Token("IF", data.getType()));
