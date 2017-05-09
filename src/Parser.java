@@ -14,8 +14,8 @@ public class Parser
 {
 	Stack<String> parse_stack;
 	private int state = 0;			//initialize state to 0
-	private int numTokens = 53; 	//total of 57 tokens in the parsing table
-	private int numStates = 349;	//total of 279 states in the parsing table
+	private int numTokens = 53; 	//total of 53 tokens in the parsing table
+	private int numStates = 349;	//total of 349 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
 	LinkedList<String> parse_tree;
 	private int totalGoto = 21;
@@ -123,7 +123,7 @@ public class Parser
 			        }
 			        else
 			        	str = literal;
-			        parse_tree.addLast("[" + token +"#[["+str+"#[]]]],");
+			        parse_tree.addLast("["+str+"#[]],");
 			     }
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
@@ -139,18 +139,52 @@ public class Parser
 			            	String sTotalPop = cell2.getRawValue();
 			            	int nTotalPop = Integer.parseInt(sTotalPop);
 			            	
-			            	String s = "[" + cell.toString() +"#[";
+			            	String s = "";
+			            	String sCell = cell.toString();
+			            	if(sCell.equals("<start>"))
+			            		s = "[" + "START" +"#[";
+			            	
+			            	if(sCell.equals("<stmts>"))
+			            		s = "[" + "STATEMENTS" +"#[";
+			            	
+			            	if(sCell.equals("<itset>"))
+			            		s = "[" + "ITERATIVE STMT" +"#[";
+			            	
+			            	if(sCell.equals("<condset>"))
+			            		s = "[" + "CONDITIONAL SET" +"#[";
+			            	
+			            	if(sCell.equals("<cond>"))
+			            		s = "[" + "CONDITIONAL STMT" +"#[";
+			            	
+			            	if(sCell.equals("<abstract>"))
+			            		s = "[" + "ABSTRACTION" +"#[";
+			            	
+			            	if(sCell.equals("<stmt>"))
+			            		s = "[" + "STATEMENT" +"#[";
+			            	
+			            	if(sCell.equals("<expr>"))
+			            		s = "[" + "EXPRESSION" +"#[";
 			            	
 			            	for(int counter = nTotalPop; counter > 0; counter--)
 			            	{
 			            		parse_stack.pop();
 			            		state_stack.pop();
-			            		s += parse_tree.get(parse_tree.size() - counter);
-			            		parse_tree.remove(parse_tree.size() - counter);
+			            		if(!s.equals(""))
+			            		{
+				            		s += parse_tree.get(parse_tree.size() - counter);
+				            		parse_tree.remove(parse_tree.size() - counter);
+				            	//	System.out.println("went here");
+			            		}
 			            	}
-			            	s = s.substring(0, s.length() - 1);
-			            	s += "]],";
-			            	parse_tree.addLast(s);
+			            	if(!s.equals(""))
+			            	{
+				            	s = s.substring(0, s.length() - 1);
+				            	s += "]],";
+				            	parse_tree.addLast(s);
+				       //     	System.out.println("went here");
+			            	}
+			            	
+			            	s = "";
 			            	
 			            	parse_stack.push(cell.toString());
 			            	

@@ -10,7 +10,7 @@ public class ReservedWord {
 		reserved_words.put("DATA_TYPE_BOOLEAN", "pasya");
 		reserved_words.put("DATA_TYPE_STRING", "tali");
 		reserved_words.put("DATA_TYPE_DOUBLE", "doble");
-		reserved_words.put("MAIN", "main");
+		reserved_words.put("MAIN", "simula");
 		reserved_words.put("DELIM_L_PAREN", "(");
 		reserved_words.put("DELIM_R_PAREN", ")");
 		reserved_words.put("DELIM_L_BLOCK", "{");

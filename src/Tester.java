@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Hashtable;
+import java.util.LinkedList;
+
 import grtree.NPLviewer;
 
 public class Tester {
@@ -56,7 +58,13 @@ public class Tester {
          System.out.println("===============================================================");
 
         System.out.println();
-        String s = parse.getParseTree().pop();
+        LinkedList<String> lparseTree = parse.getParseTree();
+        String s = lparseTree.get(lparseTree.size() - 1);
+        
+        for(String str: lparseTree)
+        {
+        	System.out.println(str);
+        }
         
         try {
 			FileWriter writer = new FileWriter(parse_tree);
@@ -118,7 +126,8 @@ public class Tester {
         System.out.println("["+valueToken.getToken()+"]");
         System.out.println();
         System.out.println("["+t.getToken()+"]");		//prints terminator token
-        parse.lookup(valueToken.getToken());
+        if(valueToken.getType() != TokenType.STRING_CONSTANT)
+        	parse.lookup(valueToken.getToken());
         parse.lookup(t.getToken());
         return value;
 
