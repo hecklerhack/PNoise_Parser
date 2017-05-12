@@ -22,6 +22,7 @@ public class Parser
 	private String literal;
 	private boolean accept = false;
 	private int error_counter = 0;
+	private ReservedWord rw;
 	
 	public Parser()
 	{
@@ -115,7 +116,7 @@ public class Parser
 			        state_stack.push(state);
 			        parse_stack.push(token);
 			        
-			        ReservedWord rw = new ReservedWord();
+			        rw = new ReservedWord();
 			        String str = "";
 			        if(rw.getLexeme(token) != null)
 			        {
@@ -123,7 +124,12 @@ public class Parser
 			        }
 			        else
 			        	str = literal;
-			        parse_tree.addLast("["+str+"#[]],");
+			        
+			        if(str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/"))
+			        {
+			        	parse_tree.addLast("[" + str + "#[");
+			        }
+			        else parse_tree.addLast("["+str+"#[]],");
 			     }
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
@@ -162,20 +168,31 @@ public class Parser
 			            	if(sCell.equals("<stmt>"))
 			            		s = "[" + "STATEMENT" +"#[";
 			            	
-			            	if(sCell.equals("<expr>"))
-			            		s = "[" + "EXPRESSION" +"#[";
+			      /*      	if(sCell.equals("<expr>"))
+			            		s = "[" + token +"#[";
+			            	
+			            	if(sCell.equals("<value>"))
+			            		s = "[" + literal +"#[";*/
 			            	
 			            	for(int counter = nTotalPop; counter > 0; counter--)
 			            	{
 			            		parse_stack.pop();
 			            		state_stack.pop();
+			            	}
+			            	
+			            	for(int counter = nTotalPop; counter > 0; counter--)
+			            	{
+			            		if(sCell.equals("<expr>") && counter == 3)
+			            		{
+			            			counter = 1;
+			            		}
 			            		if(!s.equals(""))
 			            		{
 				            		s += parse_tree.get(parse_tree.size() - counter);
 				            		parse_tree.remove(parse_tree.size() - counter);
-				            	//	System.out.println("went here");
 			            		}
 			            	}
+			            	
 			            	if(!s.equals(""))
 			            	{
 				            	s = s.substring(0, s.length() - 1);

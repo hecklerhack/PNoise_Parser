@@ -1,0 +1,5 @@
+nume_simula(){
+nume_counter>>3;
+
+ibalik 0;
+}

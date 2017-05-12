@@ -17,7 +17,7 @@ public class Tokenizer
 		this.tokenDatas = new ArrayList<TokenData>();
 		this.str = str;
 	
-                tokenDatas.add(new TokenData(Pattern.compile("^((-)?[0-9]+)"), TokenType.INTEGER_CONSTANT));
+                tokenDatas.add(new TokenData(Pattern.compile("^([0-9]+)"), TokenType.INTEGER_CONSTANT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\".*?\")"), TokenType.STRING_CONSTANT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(nume)"), TokenType.DATA_TYPE_INT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(lutang)"), TokenType.DATA_TYPE_FLOAT));
@@ -37,7 +37,7 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(_)"), TokenType.UNDERSCORE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(ibalik)"), TokenType.RETURN));
                 tokenDatas.add(new TokenData(Pattern.compile("^(ilagay)"), TokenType.SCAN));
-                tokenDatas.add(new TokenData(Pattern.compile("^(@, #, $, ^, \\, =, ., ?, ', :)"), TokenType.SYMBOLS));
+                //tokenDatas.add(new TokenData(Pattern.compile("^(@, #, $, ^, \\, =, ., ?, ', :)"), TokenType.SYMBOLS));
                 tokenDatas.add(new TokenData(Pattern.compile("^(kapag)"), TokenType.IF));
                 tokenDatas.add(new TokenData(Pattern.compile("^(kundi)"), TokenType.ELSE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(edi)"), TokenType.THEN));
@@ -50,15 +50,15 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^(tuloy)"), TokenType.CONTINUE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(totoo)"), TokenType.TRUE));
                 tokenDatas.add(new TokenData(Pattern.compile("^(mali)"), TokenType.FALSE));
-                tokenDatas.add(new TokenData(Pattern.compile("^(\\+)"), TokenType.ARITH_OP_ADD));
-                tokenDatas.add(new TokenData(Pattern.compile("^(-)"), TokenType.ARITH_OP_SUB));
-                tokenDatas.add(new TokenData(Pattern.compile("^(\\*)"), TokenType.ARITH_OP_MULTI));
-                tokenDatas.add(new TokenData(Pattern.compile("^(/)"), TokenType.ARITH_OP_DIV));
-                tokenDatas.add(new TokenData(Pattern.compile("^('*''*')"), TokenType.ARITH_EXPO));
-                tokenDatas.add(new TokenData(Pattern.compile("^(&&)"), TokenType.LOGICAL_OPE));
-                tokenDatas.add(new TokenData(Pattern.compile("^([<>=!]=?)"), TokenType.RELATIONAL_OPE));
-                tokenDatas.add(new TokenData(Pattern.compile("^('+''+')"), TokenType.INCREMENT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\+\\+)"), TokenType.INCREMENT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(--)"), TokenType.DECREMENT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\*\\*)"), TokenType.ARITH_EXPO));
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\+)"), TokenType.ARITH_OP_ADD));
+                tokenDatas.add(new TokenData(Pattern.compile("^(-)"), TokenType.ARITH_OP_SUB));                   
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\*)"), TokenType.ARITH_OP_MULTI));
+                tokenDatas.add(new TokenData(Pattern.compile("^(/)"), TokenType.ARITH_OP_DIV));           
+                tokenDatas.add(new TokenData(Pattern.compile("^(\\&\\&|\\|\\||!)"), TokenType.LOGICAL_OPE));
+                tokenDatas.add(new TokenData(Pattern.compile("^([<>=!]=?)"), TokenType.RELATIONAL_OPE));                
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\.)"), TokenType.DOT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(wakas)"), TokenType.END));
                 tokenDatas.add(new TokenData(Pattern.compile("^([a-zA-Z][a-zA-Z0-9]*)"), TokenType.IDENTIFIER));
@@ -115,9 +115,8 @@ public class Tokenizer
                             case ARITH_OP_MULTI : return (lastToken = new Token("ARITH_OP_MULTI", data.getType()));
                             case ARITH_OP_DIV : return (lastToken = new Token("ARITH_OP_DIV", data.getType()));
                             case ARITH_EXPO : return (lastToken = new Token("ARITH_EXPO", data.getType()));
-                            case LOGICAL_OPE : return (lastToken = new Token("LOGICAL_OPE", data.getType()));
-                            case RELATIONAL_OPE : 
-                            	return (lastToken = new Token("RELATIONAL_OPE, " + token, data.getType()));
+                            case LOGICAL_OPE : return (lastToken = new Token("LOGICAL_OPE, " + token, data.getType()));
+                            case RELATIONAL_OPE : return (lastToken = new Token("RELATIONAL_OPE, " + token, data.getType()));
                             case INCREMENT : return (lastToken = new Token("INCREMENT", data.getType()));
                             case DECREMENT : return (lastToken = new Token("DECREMENT", data.getType()));
                             case IF : return (lastToken = new Token("IF", data.getType()));
