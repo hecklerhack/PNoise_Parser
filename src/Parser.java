@@ -125,11 +125,17 @@ public class Parser
 			        else
 			        	str = literal;
 			        
-			        if(str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/"))
+			   /*     if(str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/"))
 			        {
 			        	parse_tree.addLast("[" + str + "#[");
 			        }
-			        else parse_tree.addLast("["+str+"#[]],");
+			        else */
+			    //    	parse_tree.addLast("["+str+"#[]],");
+			        
+			        if(!(str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/")))
+			        {
+			        	parse_tree.addLast("["+str+"#[]],");
+			        }
 			     }
 			     else if(st.indexOf("r") != -1)	//reduce
 			     {
@@ -168,10 +174,20 @@ public class Parser
 			            	if(sCell.equals("<stmt>"))
 			            		s = "[" + "STATEMENT" +"#[";
 			            	
-			      /*      	if(sCell.equals("<expr>"))
-			            		s = "[" + token +"#[";
+			            	if((sCell.equals("<expr>")) && !token.equals("TERMINATOR"))			//trying to put the operator on top
+			            	{
+			            		rw = new ReservedWord();
+			            		String lexeme = rw.getLexeme(token);
+			            		s = "[" + lexeme +"#[";
+			            	}
+			            	if(sCell.equals("<midex>") && (token.equals("ARITH_OP_MULTI") || token.equals("ARITH_OP_DIV")))		//trying to put the mult and div operator on top too
+			            	{
+			            		rw = new ReservedWord();
+			            		String lexeme = rw.getLexeme(token);
+			            		s = "[" + lexeme +"#[";
+			            	}
 			            	
-			            	if(sCell.equals("<value>"))
+			        /*    	if(sCell.equals("<value>"))
 			            		s = "[" + literal +"#[";*/
 			            	
 			            	for(int counter = nTotalPop; counter > 0; counter--)
@@ -179,13 +195,12 @@ public class Parser
 			            		parse_stack.pop();
 			            		state_stack.pop();
 			            	}
-			            	
+			            	if((sCell.equals("<expr>") || sCell.equals("<midex>")) && nTotalPop == 3)
+			            		{
+			            			nTotalPop = 2;
+			            		}
 			            	for(int counter = nTotalPop; counter > 0; counter--)
 			            	{
-			            		if(sCell.equals("<expr>") && counter == 3)
-			            		{
-			            			counter = 1;
-			            		}
 			            		if(!s.equals(""))
 			            		{
 				            		s += parse_tree.get(parse_tree.size() - counter);
@@ -198,7 +213,6 @@ public class Parser
 				            	s = s.substring(0, s.length() - 1);
 				            	s += "]],";
 				            	parse_tree.addLast(s);
-				       //     	System.out.println("went here");
 			            	}
 			            	
 			            	s = "";
