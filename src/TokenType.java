@@ -2,13 +2,12 @@ public enum TokenType{
 	
         EMPTY,
         TOKEN, 
-	IDENTIFIER, 
-	INTEGER_CONSTANT,//integer 
+        IDENTIFIER, 
+	REAL_CONSTANT,//integer 
 	STRING_CONSTANT,//"string"
         TRUE, 
         FALSE,
         MAIN,//simula
-        DQ,//TRY
         DELIM_L_PAREN,//(
         DELIM_R_PAREN,//)
         DELIM_L_BLOCK,//{
@@ -51,7 +50,15 @@ public enum TokenType{
         INCREMENT,// ++
         DECREMENT,// --
         DOT,
-        END
+        END,
+        FORMAT_INT,
+        FORMAT_STRING,
+        FORMAT_DOUBLE,
+        FORMAT_FLOAT,
+        FORMAT_CHAR,
+        COMMA;
+        
+        
         
 
 }//end enum

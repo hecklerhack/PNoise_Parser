@@ -17,7 +17,6 @@ public class Tokenizer
 		this.tokenDatas = new ArrayList<TokenData>();
 		this.str = str;
 	
-                tokenDatas.add(new TokenData(Pattern.compile("^([0-9]+)"), TokenType.INTEGER_CONSTANT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(\".*?\")"), TokenType.STRING_CONSTANT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(nume)"), TokenType.DATA_TYPE_INT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(lutang)"), TokenType.DATA_TYPE_FLOAT));
@@ -61,7 +60,14 @@ public class Tokenizer
                 tokenDatas.add(new TokenData(Pattern.compile("^([<>=!]=?)"), TokenType.RELATIONAL_OPE));                
                 tokenDatas.add(new TokenData(Pattern.compile("^(\\.)"), TokenType.DOT));
                 tokenDatas.add(new TokenData(Pattern.compile("^(wakas)"), TokenType.END));
+                tokenDatas.add(new TokenData(Pattern.compile("^(%n)"), TokenType.FORMAT_INT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(%t)"), TokenType.FORMAT_STRING));
+                tokenDatas.add(new TokenData(Pattern.compile("^(%d)"), TokenType.FORMAT_FLOAT));
+                tokenDatas.add(new TokenData(Pattern.compile("^(%l)"), TokenType.FORMAT_DOUBLE));
+                tokenDatas.add(new TokenData(Pattern.compile("^(%c)"), TokenType.FORMAT_CHAR));
+                tokenDatas.add(new TokenData(Pattern.compile("^(,)"), TokenType.COMMA));
                 tokenDatas.add(new TokenData(Pattern.compile("^([a-zA-Z][a-zA-Z0-9]*)"), TokenType.IDENTIFIER));
+                 tokenDatas.add(new TokenData(Pattern.compile("^((\\+|-)?([0-9]+)(\\.[0-9]+)?)|((\\+|-)?\\.?[0-9]+)"), TokenType.REAL_CONSTANT));
                 
                 for (String t : new String[] {"\\{", "\\}", ";", "_", "\\(", "\\)", "\\.", "\\,"}){
                     tokenDatas.add(new TokenData(Pattern.compile("^(" + t + ")"), TokenType.TOKEN));
@@ -101,9 +107,9 @@ public class Tokenizer
                             case STRING_CONSTANT : 
                                 literal = token;
                                 return (lastToken = new Token("STRING_CONSTANT, " + token, data.getType()));
-                            case INTEGER_CONSTANT : 
+                            case REAL_CONSTANT : 
                                 literal = token;
-                                return (lastToken = new Token("INTEGER_CONSTANT, " + token, data.getType()));
+                                return (lastToken = new Token("REAL_CONSTANT, " + token, data.getType()));
                             case UNDERSCORE : return (lastToken = new Token("UNDERSCORE", data.getType()));
                             case DATA_TYPE_FLOAT : return (lastToken = new Token("DATA_TYPE_FLOAT", data.getType()));
                             case DATA_TYPE_DOUBLE : return (lastToken = new Token("DATA_TYPE_DOUBLE", data.getType()));
@@ -132,6 +138,12 @@ public class Tokenizer
                             case SCAN : return (lastToken = new Token("SCAN", data.getType()));
                             case SYMBOLS : return (lastToken = new Token("SYMBOLS", data.getType()));
                             case DOT : return (lastToken = new Token("DOT", data.getType()));
+                            case FORMAT_INT : return (lastToken = new Token("FORMAT_INT", data.getType()));
+                            case FORMAT_STRING : return (lastToken = new Token("FORMAT_STRING", data.getType()));
+                            case FORMAT_FLOAT : return (lastToken = new Token("FORMAT_FLOAT", data.getType()));
+                            case FORMAT_DOUBLE : return (lastToken = new Token("FORMAT_DOUBLE", data.getType()));
+                            case FORMAT_CHAR : return (lastToken = new Token("FORMAT_CHAR", data.getType()));
+                            case COMMA : return (lastToken = new Token("COMMA", data.getType()));
                             case TRUE:
                                 literal = token;
                                 return (lastToken = new Token("TRUE", data.getType()));

@@ -15,10 +15,11 @@ public class Tester {
 
     public static void main(String args[]) throws FileNotFoundException
     {
-         File file = new File("D:\\sample.pn"); 
+         File file = new File("D://sample.pn"); 
          String input = "";
          
-         File parse_tree = new File("D:\\parse_tree.txt");
+         Interpreter inter = new Interpreter();
+         File parse_tree = new File("D://parse_tree.txt");
          Scanner sc = new Scanner(file);
          parse = new Parser();
          
@@ -32,10 +33,13 @@ public class Tester {
         System.out.println("TOKENS");
         System.out.println("===============================================================");
         
+        String toktok = "";
+        
         while (tokenoutputs.hasNextToken()){
-            System.out.print("[" + tokenoutputs.nextToken().getToken() + "]");
+            toktok = toktok + "[" + tokenoutputs.nextToken().getToken() + "]";
             sc.close();
         }
+        System.out.println(toktok);
         System.out.println();
         System.out.println("===============================================================");
         System.out.println();
@@ -61,6 +65,7 @@ public class Tester {
         LinkedList<String> lparseTree = parse.getParseTree();
         String s = lparseTree.get(lparseTree.size() - 1);
         
+        Interpreter interpreter = new Interpreter();
         for(String str: lparseTree)
         {
         	System.out.println(str);
@@ -77,8 +82,12 @@ public class Tester {
          sc.close();
          
          NPLviewer tree_gen = null;
-         if(parse.isAccepted())
-        	 tree_gen = new NPLviewer("D:\\parse_tree.txt");
+         if(parse.isAccepted()){
+        	 tree_gen = new NPLviewer("D://parse_tree.txt");
+        }
+         System.out.println("=========================================================================");
+         
+         interpreter.traverse(s, toktok);
     }
 
     //adds identifier to symbol table
@@ -97,12 +106,14 @@ public class Tester {
                 t = tok.nextToken();
                 String value = addValue(tok, t);
                 symbolTable.put(var, value);
+                System.out.println();
              
                 return;
             }
             else if(t.getType() == TokenType.TERMINATOR)
             {
             	System.out.println("["+t.getToken()+"]");
+                System.out.println();
                 return;
             }
         }
@@ -132,6 +143,11 @@ public class Tester {
         return value;
 
     }
+    
+   public Hashtable<String, String> getSymbolTable()
+   {
+       return symbolTable;
+   }
     
     public static String reverse(String input){
         char[] in = input.toCharArray();

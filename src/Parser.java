@@ -14,15 +14,15 @@ public class Parser
 {
 	Stack<String> parse_stack;
 	private int state = 0;			//initialize state to 0
-	private int numTokens = 53; 	//total of 53 tokens in the parsing table
-	private int numStates = 349;	//total of 349 states in the parsing table
+	private int numTokens = 56; 	//total of 53 tokens in the parsing table
+	private int numStates = 334;	//total of 349 states in the parsing table
 	Stack<Integer> state_stack;			//stack of states visited
 	LinkedList<String> parse_tree;
-	private int totalGoto = 21;
+	private int totalGoto = 26;
 	private String literal;
 	private boolean accept = false;
 	private int error_counter = 0;
-	private ReservedWord rw;
+        private ReservedWord rw;
 	
 	public Parser()
 	{
@@ -46,10 +46,10 @@ public class Parser
 			token = "IDENTIFIER";
 		}
 		
-		if(token.indexOf("INTEGER_CONSTANT") != -1)
+		if(token.indexOf("REAL_CONSTANT") != -1)
 		{
 			literal = token.substring(token.indexOf(",") + 1);
-			token = "INTEGER_CONSTANT";
+			token = "REAL_CONSTANT";
 		}
 		
 		if(token.indexOf("STRING_CONSTANT") != -1)
@@ -71,9 +71,9 @@ public class Parser
 		
 		try
 		{
-			FileInputStream file = new FileInputStream(new File("D:\\Parsing-Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
+			FileInputStream file = new FileInputStream(new File("D://Parsing-Table.xlsx"));    //just put excel file on the directory. I'll fix it sometime.
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheetAt(1);		//get parsing table
+			XSSFSheet sheet = workbook.getSheetAt(3);		//get parsing table
 			XSSFCell cell = null;
                         XSSFCell cfgcell = null;
 			for (int columnIndex = 1; columnIndex<=numTokens; columnIndex++){	    
